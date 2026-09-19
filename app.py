@@ -79,11 +79,31 @@ else:
         hide_index=True,
         use_container_width=True
     )
-    
+
+import numpy as np
+
 st.divider()
 
 st.subheader("Stochastic Inflation Estimate")
 
+# -----------------------------
+# Stochastic inflation model
+# -----------------------------
+# Based on the paper:
+#
+# Annual inflation ~ Normal(mean = 4%, standard deviation = 1%)
+#
+# Mean inflation = 4%
+# Inflation volatility = 1%
+#
+# This means each future year's inflation rate is randomly
+# generated around 4%, with a standard deviation of 1 percentage point.
+#
+# We simulate 1,000 possible inflation paths from the user's
+# current age until retirement.
+
+mean_inflation = 0.04
+inflation_volatility = 0.01
 num_simulations = 1000
 
 rng = np.random.default_rng(42)
@@ -92,25 +112,39 @@ final_expenses = []
 
 for _ in range(num_simulations):
 
+    # Generate one possible path of yearly inflation rates
     yearly_inflation = rng.normal(
-        loc=0.04,
-        scale=0.01,
+        loc=mean_inflation,
+        scale=inflation_volatility,
         size=years_left
     )
 
     future_expense = monthly_expense
 
+    # Compound expenditure using the simulated inflation path
     for inflation in yearly_inflation:
         future_expense *= (1 + inflation)
 
     final_expenses.append(future_expense)
 
 
+# Monte Carlo results
 expected_expense = np.mean(final_expenses)
 lower_bound = np.percentile(final_expenses, 5)
 upper_bound = np.percentile(final_expenses, 95)
 
 
+# Show model assumptions
+st.write("**Model assumptions**")
+st.write(f"Mean annual inflation: **{mean_inflation * 100:.0f}%**")
+st.write(
+    f"Annual inflation volatility: "
+    f"**{inflation_volatility * 100:.0f}%**"
+)
+st.write(f"Monte Carlo simulations: **{num_simulations:,}**")
+
+
+# Show results
 st.metric(
     "Expected monthly expenditure",
     f"₹{expected_expense:,.0f}"
@@ -120,3 +154,5 @@ st.write(
     f"90% of simulated outcomes fall approximately between "
     f"**₹{lower_bound:,.0f}** and **₹{upper_bound:,.0f}** per month."
 )
+
+    
