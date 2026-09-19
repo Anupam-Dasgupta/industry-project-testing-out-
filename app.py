@@ -119,9 +119,28 @@ else:
     )
 
 
-    # =========================================================
-    # STOCHASTIC INFLATION MODEL
-    # =========================================================
+st.divider()
+
+
+# -----------------------------
+# Stochastic inflation model
+# -----------------------------
+# Based on the paper:
+#
+# Annual inflation ~ Normal(mean = 4%, standard deviation = 1%)
+#
+# Mean inflation = 4%
+# Inflation volatility = 1%
+#
+# This means each future year's inflation rate is randomly
+# generated around 4%, with a standard deviation of 1 percentage point.
+#
+# We simulate 1,000 possible inflation paths from the user's
+# current age until retirement.
+
+mean_inflation = 0.04
+inflation_volatility = 0.01
+num_simulations = 1000
 
     st.divider()
     st.subheader("Monte Carlo Inflation Model")
@@ -180,6 +199,11 @@ else:
     lower_bound = np.percentile(
         final_expenses,
         5
+    # Generate one possible path of yearly inflation rates
+    yearly_inflation = rng.normal(
+        loc=mean_inflation,
+        scale=inflation_volatility,
+        size=years_left
     )
 
     upper_bound = np.percentile(
@@ -187,6 +211,9 @@ else:
         95
     )
 
+    # Compound expenditure using the simulated inflation path
+    for inflation in yearly_inflation:
+        future_expense *= (1 + inflation)
 
     # -----------------------------
     # Model parameters
@@ -194,7 +221,11 @@ else:
 
     st.write("##### Model Parameters")
 
-    col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns(3)
+# Monte Carlo results
+expected_expense = np.mean(final_expenses)
+lower_bound = np.percentile(final_expenses, 5)
+upper_bound = np.percentile(final_expenses, 95)
 
     with col1:
         st.metric(
@@ -234,8 +265,25 @@ else:
 
 
 st.divider()
+# Show model assumptions
+st.write("**Model assumptions**")
+st.write(f"Mean annual inflation: **{mean_inflation * 100:.0f}%**")
+st.write(
+    f"Annual inflation volatility: "
+    f"**{inflation_volatility * 100:.0f}%**"
+)
+st.write(f"Monte Carlo simulations: **{num_simulations:,}**")
+
+
+# Show results
+st.metric(
+    "Expected monthly expenditure",
+    f"₹{expected_expense:,.0f}"
+)
 
 st.caption(
     "Estimates are based on assumed inflation dynamics and are "
     "intended for analytical purposes."
 )
+
+    
