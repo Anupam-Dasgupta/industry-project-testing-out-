@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 
 st.title("Retirement Expense Calculator")
@@ -78,3 +79,44 @@ else:
         hide_index=True,
         use_container_width=True
     )
+    
+st.divider()
+
+st.subheader("Stochastic Inflation Estimate")
+
+num_simulations = 1000
+
+rng = np.random.default_rng(42)
+
+final_expenses = []
+
+for _ in range(num_simulations):
+
+    yearly_inflation = rng.normal(
+        loc=0.04,
+        scale=0.01,
+        size=years_left
+    )
+
+    future_expense = monthly_expense
+
+    for inflation in yearly_inflation:
+        future_expense *= (1 + inflation)
+
+    final_expenses.append(future_expense)
+
+
+expected_expense = np.mean(final_expenses)
+lower_bound = np.percentile(final_expenses, 5)
+upper_bound = np.percentile(final_expenses, 95)
+
+
+st.metric(
+    "Expected monthly expenditure",
+    f"₹{expected_expense:,.0f}"
+)
+
+st.write(
+    f"90% of simulated outcomes fall approximately between "
+    f"**₹{lower_bound:,.0f}** and **₹{upper_bound:,.0f}** per month."
+)
