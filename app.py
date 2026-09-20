@@ -142,17 +142,17 @@ mean_inflation = 0.04
 inflation_volatility = 0.01
 num_simulations = 1000
 
-    st.divider()
-    st.subheader("Monte Carlo Inflation Model")
+st.divider()
+st.subheader("Monte Carlo Inflation Model")
 
-    st.caption(
+st.caption(
         "Annual inflation is modelled as a stochastic process "
         "and simulated independently across future years."
-    )
+)
 
 
-    # Stochastic model assumptions
-    #
+# Stochastic model assumptions
+#
     # Annual inflation:
     #
     # I_t ~ Normal(mean = 4%, standard deviation = 1%)
@@ -169,57 +169,58 @@ num_simulations = 1000
     #
     # E_t = E_(t-1) * (1 + I_t)
 
-    mean_inflation = 0.04
-    inflation_volatility = 0.01
-    num_simulations = 1000
+mean_inflation = 0.04
+inflation_volatility = 0.01
+num_simulations = 1000
 
-    rng = np.random.default_rng(42)
+rng = np.random.default_rng(42)
 
-    final_expenses = []
-
-
-    for _ in range(num_simulations):
-
-        yearly_inflation = rng.normal(
-            loc=mean_inflation,
-            scale=inflation_volatility,
-            size=years_left
-        )
-
-        future_expense = monthly_expense
-
-        for inflation in yearly_inflation:
-            future_expense *= (1 + inflation)
-
-        final_expenses.append(future_expense)
+final_expenses = []
 
 
-    expected_expense = np.mean(final_expenses)
+for _ in range(num_simulations):
 
-    lower_bound = np.percentile(
-        final_expenses,
-        5
-    # Generate one possible path of yearly inflation rates
     yearly_inflation = rng.normal(
         loc=mean_inflation,
         scale=inflation_volatility,
         size=years_left
     )
 
-    upper_bound = np.percentile(
-        final_expenses,
-        95
-    )
+    future_expense = monthly_expense
 
-    # Compound expenditure using the simulated inflation path
     for inflation in yearly_inflation:
         future_expense *= (1 + inflation)
+
+    final_expenses.append(future_expense)
+
+
+expected_expense = np.mean(final_expenses)
+
+lower_bound = np.percentile(
+    final_expenses,
+    5
+)
+    # Generate one possible path of yearly inflation rates
+yearly_inflation = rng.normal(
+    loc=mean_inflation,
+    scale=inflation_volatility,
+    size=years_left
+)
+
+upper_bound = np.percentile(
+    final_expenses,
+    95
+)
+
+    # Compound expenditure using the simulated inflation path
+for inflation in yearly_inflation:
+    future_expense *= (1 + inflation)
 
     # -----------------------------
     # Model parameters
     # -----------------------------
 
-    st.write("##### Model Parameters")
+st.write("##### Model Parameters")
 
 col1, col2, col3 = st.columns(3)
 # Monte Carlo results
@@ -227,41 +228,41 @@ expected_expense = np.mean(final_expenses)
 lower_bound = np.percentile(final_expenses, 5)
 upper_bound = np.percentile(final_expenses, 95)
 
-    with col1:
-        st.metric(
-            "Mean Inflation",
-            "4.0%"
-        )
+with col1:
+    st.metric(
+        "Mean Inflation",
+        "4.0%"
+    )
 
-    with col2:
-        st.metric(
-            "Inflation Volatility",
-            "1.0%"
-        )
+with col2:
+    st.metric(
+        "Inflation Volatility",
+        "1.0%"
+    )
 
-    with col3:
-        st.metric(
-            "Simulations",
-            f"{num_simulations:,}"
-        )
+with col3:
+    st.metric(
+        "Simulations",
+        f"{num_simulations:,}"
+    )
 
 
     # -----------------------------
     # Monte Carlo results
     # -----------------------------
 
-    st.write("##### Simulation Results")
+st.write("##### Simulation Results")
 
-    st.metric(
-        "Expected Monthly Expenditure at Retirement",
-        f"₹{expected_expense:,.0f}"
-    )
+st.metric(
+    "Expected Monthly Expenditure at Retirement",
+    f"₹{expected_expense:,.0f}"
+)
 
 
-    st.info(
-        f"90% simulated interval: "
-        f"₹{lower_bound:,.0f} – ₹{upper_bound:,.0f} per month"
-    )
+st.info(
+    f"90% simulated interval: "
+    f"₹{lower_bound:,.0f} – ₹{upper_bound:,.0f} per month"
+)
 
 
 st.divider()
