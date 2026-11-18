@@ -107,12 +107,8 @@ def render_chatbot_launcher(context):
                         ])
 
                     except error.HTTPError as exc:
-                        if exc.code == 401:
-                            st.error("Invalid Groq API key.")
-                        elif exc.code == 429:
-                            st.error("Groq rate limit reached. Try again later.")
-                        else:
-                            st.error(f"Groq API error: HTTP {exc.code}")
+                        details = exc.read().decode("utf-8", errors="replace")
+                        st.error(f"Groq API error {exc.code}: {details}")
 
                     except (error.URLError, TimeoutError, OSError) as exc:
                         st.error(f"Connection error: {exc}")
