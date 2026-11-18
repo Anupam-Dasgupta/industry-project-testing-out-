@@ -2,6 +2,7 @@ from chatbot.chatbot_ui import render_chatbot_launcher
 import streamlit as st
 import pandas as pd
 import numpy as np
+from chatbot.chatbot_ui import render_chatbot_launcher
 
 
 st.set_page_config(
@@ -115,7 +116,6 @@ chatbot_context = {
     "lower_90_percent_interval": lower_bound,
     "upper_90_percent_interval": upper_bound,
 }
-
 render_chatbot_launcher(chatbot_context)
 st.divider()
 
