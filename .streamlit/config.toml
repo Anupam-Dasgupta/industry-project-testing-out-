@@ -1,17 +1,12 @@
 [theme]
+# Chennai Mathematical Institute-inspired palette
 base = "light"
-
-primaryColor = "#1F4E78"
-backgroundColor = "#F8FAFC"
-secondaryBackgroundColor = "#EAF0F6"
-textColor = "#1F2937"
-
+primaryColor = "#1717B8"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F2F3FF"
+textColor = "#171717"
 font = "sans serif"
 
-
-[client]
-toolbarMode = "minimal"
-
-
-[browser]
-gatherUsageStats = false
+[server]
+# Keep the app accessible on your local machine.
+headless = true
