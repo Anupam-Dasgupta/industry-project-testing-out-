@@ -8,8 +8,8 @@ from urllib import error, request
 import streamlit as st
 
 
-OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
-MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
+OLLAMA_URL = st.secrets["OLLAMA_URL"]
+MODEL = st.secrets["OLLAMA_MODEL"]
 
 
 def ask_qwen(context, messages):
